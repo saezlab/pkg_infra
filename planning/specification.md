@@ -9,7 +9,7 @@ Our architecture consists of a number of Python packages working together. These
 - Discovery and merging of configs in priority order
 - Working directory, user, package built-in
 - Format: YAML
-- Choose an established solution, e.g. https://hydra.cc/docs/intro/, https://omegaconf.readthedocs.io/en/latest/ 
+- Choose an established solution, e.g. https://hydra.cc/docs/intro/, https://omegaconf.readthedocs.io/en/latest/
 - Propagate config parameters to lower level packages
 
 ## Logging
@@ -86,3 +86,120 @@ Optional/Future Requirements
    - Add tests for config loading, logger setup, and session management in the tests/ folder.
 
 ---
+
+## Design ideas, implementation details
+
+- How we should decide messages from which packages should be part of a certain
+    log file?
+- Our packages (developed by our group) form an "ecosystem"
+- Each package in this ecosystem at import time should tell the infra package
+    that they belong to this ecosystem and request config and logging
+    accordingly
+- There should be config options to include in the common log file 1) only our
+    ecosystem packages, 2) also other scientific and data science packages, 3)
+    or all packages
+- The config handling should be similar, since the package registers itself in
+    the infra package, it also receives config from the ecosystem, which is
+    then merged with configs from any other source
+
+Ecosystem config:
+
+- Defined in the infra package
+- Generic default template for an ecosystem, doesn't know which ecosystem it
+    will be used for
+```
+- handlers:
+  - default:
+    - enabled: True
+    - scope: "package" | "ecosystem" | "scientific" | "all"
+    - level: "INFO"
+    - formatter: <template>
+  - file:
+    - enabled: True
+    - parent: default
+    - scope: "package" | "ecosystem" | "scientific" | "all"
+    - level: "INFO"
+    - file: True | "path/to/file.log"
+    - formatter: <template>
+  - console:
+    - enabled: True
+    - parent: default
+    - scope: "package" | "ecosystem" | "scientific" | "all"
+    - level: "INFO"
+    - formatter: <template>
+  - custom_other_handler:
+    - ...
+- ecosystems:
+  - sysbioverse:
+    - corneto
+    - omnipath
+    - annnet
+```
+
+Minimal config of a package:
+(even this is not necessary for our ecosystem, because the infra package also
+contains an "ecosystem" definition, i.e. inventory of packages that belong here)
+```
+- ecosystems: ["sysbioverse"]
+```
+
+Config of a customized package, which wants another log handler:
+```
+- ecosystems: ["sysbioverse"]
+- handlers:
+  - default:
+    - enabled: False
+  - customlog:
+    - enabled: True
+    - scope: "package" | "ecosystem" | "scientific" | "all"
+    - level: "INFO"
+    - file: True | "path/to/file.log"
+    - formatter: <template>
+```
+
+## Config priority order
+
+(locations)
+0. Environment variables
+1. Working directory
+2. User
+3. Package defaults
+4. Ecosystem defaults
+
+(scopes)
+0. Package
+1. Ecosystem
+
+Each package and the ecosystem might have config at each of the levels above.
+E.g. in a working direcory we have:
+```
+corneto.conf
+omnipath.conf
+sysbioverse.conf
+```
+Within each location, each file might have package or ecosystem scope configs:
+- in the package scope the package's config has higher priority
+- in the ecosystem scope the ecosystem's config has higher priority
+
+
+Example of package config:
+
+`corneto.conf`
+```
+- corneto_opt1: x
+- corneto_opt2: y
+- sysbioverse:
+  - sysbioverse_opt1: a
+  - sysbioverse_opt2: b
+```
+
+Example of ecosystem config:
+
+`sysbioverse.conf`
+```
+- sysbioverse_opt1: a
+- sysbioverse_opt2: b
+- corneto:
+  - corneto_opt1: x
+  - corneto_opt2: y
+```
