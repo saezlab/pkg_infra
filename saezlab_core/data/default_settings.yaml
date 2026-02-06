@@ -1,11 +1,51 @@
 settings_version: 0.0.1 # version of this configuration system in Saezlab
 
+# -------------------------------------
+# ----      Environment           -----
+# -------------------------------------
+environment:
+  dev:
+    name: development
+    debug: true
+  lab:
+    name: laboratory
+    debug: true
+  prod:
+    name: production
+    debug: false
 
+# -------------------------------------
+# ----      Application           -----
+# -------------------------------------
+app:
+  name: null
+  environment: null
+
+# -------------------------------------
+# ----      Paths                 -----
+# -------------------------------------
+paths:
+  data_dir: null
+  cache_dir: null
+  log_dir: null
+  temp_dir: null
+
+# -------------------------------------
+# ----      Session               -----
+# -------------------------------------
+session:
+  id: null
+  user: null
+  workspace: null
+  started_at: null
+  tags: [] # Ecosystem maybe
+
+# -------------------------------------
+# ----      Logging               -----
+# -------------------------------------
 logging:
   version: 1   # version of this logging configuration
-
   disable_existing_loggers: false
-
   formatters:
     default:
       format: '[%(asctime)s.%(msecs)03d] %(levelname)s in %(module)s: %(message)s'
@@ -42,3 +82,7 @@ logging:
     level: WARNING
     handlers: [console]
 
+# -------------------------------------
+# ----      Integrations          -----
+# -------------------------------------
+integrations: {}
