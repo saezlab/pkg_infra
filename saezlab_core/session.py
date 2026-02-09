@@ -191,7 +191,7 @@ def get_session(workspace: str | Path, include_location: bool = True) -> Session
         
         location = _get_location() if include_location else None
         
-        logger.info("Creating new session")
+        logger.info("Creating new session...")
         
         _current_session = Session(
             hostname=hostname,
@@ -205,6 +205,8 @@ def get_session(workspace: str | Path, include_location: bool = True) -> Session
             config=config,
             session_logger=app_logger
         )
+
+        logger.info("Session has been created")
     else:
         logger.info("Reusing existing session")
         _current_session.log()

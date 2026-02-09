@@ -72,10 +72,8 @@ logging:
       class: logging.FileHandler
       level: DEBUG
       formatter: default
-      filename: "logs/saezlab_core.log"
+      filename: "logs/file_loggger.log"
       encoding: utf-8
-      #maxBytes: 1024
-      #backupCount: 3
 
   loggers:
     default:
