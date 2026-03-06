@@ -1,17 +1,17 @@
 ![project-banner](./docs/assets/project-banner-readme.png)
 
-# saezlab_core
+# pkg_infra
 
 - [ ] TODO: Add badges to your project.
 
-[![Tests](https://img.shields.io/github/actions/workflow/status/saezlab/saezlab_core/test.yml?branch=master)](https://github.com/saezlab/saezlab_core/actions/workflows/test.yml)
-[![Docs](https://img.shields.io/badge/docs-MkDocs-blue)](https://saezlab.github.io/saezlab_core/)
+[![Tests](https://img.shields.io/github/actions/workflow/status/saezlab/pkg_infra/test.yml?branch=master)](https://github.com/saezlab/pkg_infra/actions/workflows/test.yml)
+[![Docs](https://img.shields.io/badge/docs-MkDocs-blue)](https://saezlab.github.io/pkg_infra/)
 ![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)
-![PyPI](https://img.shields.io/pypi/v/saezlab_core)
-![Python](https://img.shields.io/pypi/pyversions/saezlab_core)
-![License](https://img.shields.io/github/license/saezlab/saezlab_core)
-![Issues](https://img.shields.io/github/issues/saezlab/saezlab_core)
-![Last Commit](https://img.shields.io/github/last-commit/saezlab/saezlab_core)
+![PyPI](https://img.shields.io/pypi/v/pkg_infra)
+![Python](https://img.shields.io/pypi/pyversions/pkg_infra)
+![License](https://img.shields.io/github/license/saezlab/pkg_infra)
+![Issues](https://img.shields.io/github/issues/saezlab/pkg_infra)
+![Last Commit](https://img.shields.io/github/last-commit/saezlab/pkg_infra)
 
 ## Description
 

@@ -1,8 +1,8 @@
 # Contributing to the documentation
 
-Contributing to the documentation benefits everyone who uses saezlab_core. We
+Contributing to the documentation benefits everyone who uses pkg_infra. We
 encourage you to help us improve the documentation, and you don't have to be an
-expert on saezlab_core to do so! In fact, there are sections of the docs that are
+expert on pkg_infra to do so! In fact, there are sections of the docs that are
 worse off after being written by experts. If something in the docs doesn't make
 sense to you, updating the relevant section after you figure it out is a great
 way to ensure it will help the next person.
@@ -20,7 +20,7 @@ interface (the `Commit changes...` button).
 
 Some other important things to know about the docs:
 
-- The saezlab_core documentation consists of two parts: the docstrings in the code
+- The pkg_infra documentation consists of two parts: the docstrings in the code
   itself and the docs in the `docs/` folder. The docstrings provide a clear
   explanation of the usage of the individual functions, while the documentation
   website you are looking at is built from the `docs/` folder.

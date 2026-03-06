@@ -1,4 +1,4 @@
-Welcome to the saezlab_core community! We follow open-source principles and
+Welcome to the pkg_infra community! We follow open-source principles and
 encourage any sort of contribution. We communicate on GitHub, where we also
 organise our projects.
 
@@ -18,8 +18,8 @@ organise our projects.
 
 ## Contributing Guidelines GitHub Links
 
-- [Contribution guidelines](https://github.com/saezlab_core/saezlab_core/blob/main/CONTRIBUTING.md)
+- [Contribution guidelines](https://github.com/pkg_infra/pkg_infra/blob/main/CONTRIBUTING.md)
 
-- [Code of Conduct](https://github.com/saezlab_core/saezlab_core/blob/main/CODE_OF_CONDUCT.md)
+- [Code of Conduct](https://github.com/pkg_infra/pkg_infra/blob/main/CODE_OF_CONDUCT.md)
 
-- [Developer Guide](https://github.com/saezlab_core/saezlab_core/blob/main/DEVELOPER.md)
+- [Developer Guide](https://github.com/pkg_infra/pkg_infra/blob/main/DEVELOPER.md)

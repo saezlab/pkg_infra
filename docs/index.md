@@ -1,3 +1,3 @@
-# Welcome to saezlab_core
+# Welcome to pkg_infra
 
 This is the main documentation page.

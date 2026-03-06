@@ -1,5 +1,5 @@
-site_name: saezlab_core
-site_url: https://saezlab.github.io/saezlab_core
+site_name: pkg_infra
+site_url: https://saezlab.github.io/pkg_infra
 theme:
     name: material
     font:
@@ -30,9 +30,9 @@ nav:
 -   Home: index.md
 
 -   About:
-    -   Project: saezlab_core-project/project.md
-    -   Design philosophy: saezlab_core-project/design-philosophy.md
-    -   Use Cases: saezlab_core-project/use-cases.md
+    -   Project: pkg_infra-project/project.md
+    -   Design philosophy: pkg_infra-project/design-philosophy.md
+    -   Use Cases: pkg_infra-project/use-cases.md
     -   About: about.md
 
 -   Get Started:
@@ -50,8 +50,8 @@ nav:
 
 -   Reference:
     -   API Documentation:
-        -   saezlab_core:
-            -   _metadata: reference/source/saezlab_core/_metadata-docs.md
+        -   pkg_infra:
+            -   _metadata: reference/source/pkg_infra/_metadata-docs.md
 -   Community:
     -   Join Us: community/index.md
     -   Where to Start: community/contribute.md
