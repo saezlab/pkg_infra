@@ -3,7 +3,7 @@ import warnings
 
 import pandas as pd
 
-from saezlab_core import Session
+from pkg_infra import get_session
 
 __all__ = [
     'main',
@@ -18,8 +18,8 @@ def main() -> None:
     """
     # Capture Python warnings into logging
     logging.captureWarnings(True)
-    Session.initialize('scripts/demo/config.yaml')
-    log = Session.get_logger(__name__)
+    session = get_session(workspace='scripts/demo')
+    log = session.get_logger()
     log.info('Demo started using Session.get_logger!')
     log.debug(
         'This is a DEBUG message (should not appear unless level is DEBUG)'

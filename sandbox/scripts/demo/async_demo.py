@@ -1,7 +1,7 @@
 import time
 import threading
 
-from saezlab_core import Session
+from pkg_infra import get_session
 
 __all__ = [
     'log_spammer',
@@ -17,7 +17,8 @@ def log_spammer(thread_id: int, n: int, delay: float = 0.0) -> None:
         n (int): Number of log messages to emit.
         delay (float, optional): Delay in seconds between messages. Defaults to 0.0.
     """
-    log = Session.get_logger(f'thread-{thread_id}')
+    session = get_session(workspace='scripts/demo', include_location=False)
+    log = session.get_logger()
     for i in range(n):
         log.info(f'Thread {thread_id} message {i + 1}')
         if delay:
@@ -30,7 +31,7 @@ def main() -> None:
     This function initializes logging, starts multiple threads to generate log messages,
     and demonstrates thread-safe async logging and log rotation.
     """
-    Session.initialize('./saezlab_core/demo/config.yaml')
+    get_session(workspace='scripts/demo', include_location=False)
     num_threads = 5
     messages_per_thread = 100
     threads = []
@@ -42,8 +43,6 @@ def main() -> None:
         th.start()
     for th in threads:
         th.join()
-    # Stop the async logging listener to flush all logs
-    Session.stop_logging()
     print(
         f'Logged {num_threads * messages_per_thread} messages from {num_threads} threads.'
     )
