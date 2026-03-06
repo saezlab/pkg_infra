@@ -1,4 +1,0 @@
-logging:
-  level: DEBUG
-app:
-  retries: 2
