@@ -77,10 +77,10 @@ logging:
 
   loggers:
     default:
-      level: WARNING
-      sysbio_infra: INFO
-      sysbioverse: DEBUG
-      metabolomics: false
+      level: INFO
+      #sysbio_infra: INFO
+      #sysbioverse: DEBUG
+      #metabolomics: false
       handlers: [console, file]
       propagate: false
     verbose:
