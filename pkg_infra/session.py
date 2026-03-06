@@ -8,6 +8,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 from dataclasses import dataclass
 from urllib.error import URLError
+from urllib.parse import urlparse
 from urllib.request import urlopen
 
 # Third-party/local imports
@@ -20,6 +21,8 @@ from pkg_infra.constants import LOG_TIMESTAMP
 # Module logger
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
+
+IPINFO_URL = 'https://ipinfo.io/json'
 
 # ---- Classes
 
@@ -148,7 +151,11 @@ def _get_location(timeout: float = 3.0) -> str | None:
     """
     logger.debug('Resolving location via ipinfo.io')
     try:
-        with urlopen('https://ipinfo.io/json', timeout=timeout) as response:
+        parsed = urlparse(IPINFO_URL)
+        if parsed.scheme != 'https' or parsed.netloc != 'ipinfo.io':
+            raise ValueError('Unsafe location lookup URL configuration.')
+
+        with urlopen(IPINFO_URL, timeout=timeout) as response:  # nosec B310
             data = json.load(response)
             city = data.get('city')
             region = data.get('region')
