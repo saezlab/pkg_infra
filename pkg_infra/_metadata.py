@@ -44,7 +44,9 @@ def get_metadata() -> dict:
             pyproject = toml.load(toml_path)
             project = pyproject.get('project', {})
             authors = project.get('authors', [])
-            author_names = [author.get('name') for author in authors if author.get('name')]
+            author_names = [
+                author.get('name') for author in authors if author.get('name')
+            ]
 
             meta = {
                 'name': project.get('name'),

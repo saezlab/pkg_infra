@@ -13,8 +13,7 @@
 # https://opensource.org/license/mit
 #
 
-"""Session handler, configuration, and logging handler for Saezlab packages and applications.
-"""
+"""Session handler, configuration, and logging handler for Saezlab packages and applications."""
 
 import logging
 
@@ -28,11 +27,7 @@ __log_timestamp__ = LOG_TIMESTAMP
 
 get_root_logger_configured(timestamp=LOG_TIMESTAMP)
 
-__all__ = [
-    'get_session',
-    '__version__',
-    '__author__'
-]
+__all__ = ['get_session', '__version__', '__author__']
 
 # Log import for debugging
 logging.info(f'Importing {__name__}')

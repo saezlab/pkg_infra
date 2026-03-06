@@ -22,7 +22,6 @@ WORKING_DIRECTORY_CONFIG_FILENAME = '04_workdir.yaml'
 ENV_VARIABLE_DEFAULT_CONFIG = 'PKG_INFRA_CONFIG'
 
 
-
 class ConfigLoader:
     """Loader for YAML configuration files with merging and priority logic.
 
@@ -37,7 +36,6 @@ class ConfigLoader:
     5. Environment variable
     6. Custom directory given by the user.
     """
-
 
     @staticmethod
     def load_config(config_path: str | Path | None = None) -> OmegaConf:
@@ -65,7 +63,9 @@ class ConfigLoader:
                 logger.debug('Loading custom config: %s', custom_path)
                 parts.append(load_existing(custom_path))
             else:
-                logger.warning('Custom config path does not exist: %s', custom_path)
+                logger.warning(
+                    'Custom config path does not exist: %s', custom_path
+                )
 
         config = merge_configs([p for p in parts if p is not None])
 
@@ -77,6 +77,7 @@ class ConfigLoader:
             raise
         logger.info('Configuration loaded and validated')
         return config
+
 
 def resolve_config_paths() -> dict[str, Path | None]:
     """Resolve and return the standard configuration file paths for the application.
@@ -107,7 +108,10 @@ def read_package_default() -> OmegaConf:
         OmegaConf: The default configuration, or an empty config if not found.
     """
     try:
-        logger.debug('Loading package default config: %s', DEFAULT_PACKAGE_CONFIG_FILENAME)
+        logger.debug(
+            'Loading package default config: %s',
+            DEFAULT_PACKAGE_CONFIG_FILENAME,
+        )
         raw_config_text = (
             resources.files('pkg_infra.data')
             .joinpath(DEFAULT_PACKAGE_CONFIG_FILENAME)
@@ -115,7 +119,10 @@ def read_package_default() -> OmegaConf:
         )
         return OmegaConf.create(raw_config_text)
     except FileNotFoundError:
-        logger.warning('Package default config not found: %s', DEFAULT_PACKAGE_CONFIG_FILENAME)
+        logger.warning(
+            'Package default config not found: %s',
+            DEFAULT_PACKAGE_CONFIG_FILENAME,
+        )
         return OmegaConf.create({})
 
 

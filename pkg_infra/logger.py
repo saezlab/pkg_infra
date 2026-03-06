@@ -1,4 +1,3 @@
-
 # Standard library imports
 import os
 import copy
@@ -19,9 +18,9 @@ logger.addHandler(logging.NullHandler())
 
 DEFAULT_FILENAME_LOG_MISSING = 'logs/pkg_infra.log'
 
+
 def _uppercase_levels(d: object) -> None:
-    """Recursively convert all `level` values in a dict to uppercase strings.
-    """
+    """Recursively convert all `level` values in a dict to uppercase strings."""
     if isinstance(d, dict):
         for k, v in d.items():
             if k == 'level' and isinstance(v, str):
@@ -31,6 +30,7 @@ def _uppercase_levels(d: object) -> None:
     elif isinstance(d, list):
         for item in d:
             _uppercase_levels(item)
+
 
 def update_log_filenames_with_timestamp(
     config_dict: dict[str, object],
@@ -74,7 +74,9 @@ def configure_loggers_from_omegaconf(
         raise ValueError("No 'logging' section found in config.")
 
     # Always convert to a pure dict (resolves all OmegaConf nodes)
-    log_cfg = OmegaConf.to_container(merged_config['logging'], resolve=True, structured_config_mode='dict')
+    log_cfg = OmegaConf.to_container(
+        merged_config['logging'], resolve=True, structured_config_mode='dict'
+    )
 
     # Make a copy to avoid mutating the original config
     log_cfg = copy.deepcopy(log_cfg)
@@ -84,12 +86,17 @@ def configure_loggers_from_omegaconf(
 
     # Update all log filenames with the provided timestamp
     if timestamp is not None:
-        log_cfg = update_log_filenames_with_timestamp(log_cfg, timestamp=timestamp)
+        log_cfg = update_log_filenames_with_timestamp(
+            log_cfg, timestamp=timestamp
+        )
 
     # Ensure file handler directories exist and set default filenames if needed
     handlers = log_cfg.get('handlers', {})
     for handler in handlers.values():
-        if handler.get('class') in ['logging.FileHandler', 'logging.handlers.RotatingFileHandler']:
+        if handler.get('class') in [
+            'logging.FileHandler',
+            'logging.handlers.RotatingFileHandler',
+        ]:
             filename = handler.get('filename')
             if filename:
                 Path(filename).parent.mkdir(parents=True, exist_ok=True)
@@ -99,8 +106,7 @@ def configure_loggers_from_omegaconf(
 
 
 def get_root_logger_configured(timestamp: str | None = None) -> None:
-    """Configure the root logger using the package default config and optional timestamp.
-    """
+    """Configure the root logger using the package default config and optional timestamp."""
     package_config = read_package_default()
     configure_loggers_from_omegaconf(package_config, timestamp=timestamp)
 

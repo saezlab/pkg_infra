@@ -1,4 +1,3 @@
-
 # Standard library imports
 import json
 import uuid
@@ -41,6 +40,7 @@ class Session:
         config: Loaded configuration object.
         session_logger: Logger instance for the session.
     """
+
     hostname: str
     username: str
     workspace: Path
@@ -73,7 +73,7 @@ class Session:
                 fields.append(f"{field_name}=Path('{value}')")
             else:
                 fields.append(f'{field_name}={value!r}')
-        return f"Session({', '.join(fields)})"
+        return f'Session({", ".join(fields)})'
 
     def log(self) -> None:
         """Log the string representation of the session using the module logger."""
@@ -89,7 +89,6 @@ class Session:
         except ImportError:
             logger.info('OmegaConf is not available. Falling back to pprint.')
 
-
     @staticmethod
     def get_logger() -> logging.Logger | None:
         """Return the logger instance from the current session, if available.
@@ -104,22 +103,27 @@ class Session:
 # ---- Global variables
 _current_session: Session | None = None
 
+
 # ---- Private helper functions
 def _get_hostname() -> str:
     """Get the current machine's hostname."""
     return socket.gethostname()
 
+
 def _get_username() -> str:
     """Get the current user's username."""
     return getpass.getuser()
+
 
 def _get_workspace(workspace: Path | str) -> Path:
     """Resolve and return the absolute path to the workspace."""
     return Path(workspace).expanduser().resolve()
 
+
 def _get_process_id() -> str:
     """Generate a new unique process/session ID (UUID4)."""
     return str(uuid.uuid4())
+
 
 def _get_time() -> tuple[datetime, datetime]:
     """Get the current UTC and local datetime objects."""
@@ -127,9 +131,11 @@ def _get_time() -> tuple[datetime, datetime]:
     now_local = datetime.now().astimezone()
     return now_utc, now_local
 
+
 def _get_timezone(localtime: datetime) -> str:
     """Get the timezone name from a local datetime object."""
     return localtime.tzname()
+
 
 def _get_location(timeout: float = 3.0) -> str | None:
     """Attempt to determine the user's geolocation using a public IP lookup.
@@ -155,16 +161,20 @@ def _get_location(timeout: float = 3.0) -> str | None:
         logger.warning('Location lookup failed', exc_info=True)
         return None
 
+
 def _get_configuration() -> object:
     """Load and return the merged configuration using ConfigLoader."""
     return ConfigLoader.load_config()
+
 
 def _get_app_logger(merged_config: object) -> logging.Logger:
     """Get the application logger from the merged configuration object."""
     return logging.getLogger(merged_config.app.logger)
 
 
-def get_session(workspace: str | Path, include_location: bool = True) -> Session:
+def get_session(
+    workspace: str | Path, include_location: bool = True
+) -> Session:
     """Return a singleton Session object for this process, initializing it if necessary.
 
     Args:
@@ -177,7 +187,6 @@ def get_session(workspace: str | Path, include_location: bool = True) -> Session
     global _current_session
     logger.info('Initialization of a session:')
     if _current_session is None:
-
         config = _get_configuration()
 
         configure_loggers_from_omegaconf(config, timestamp=LOG_TIMESTAMP)
@@ -211,7 +220,7 @@ def get_session(workspace: str | Path, include_location: bool = True) -> Session
             timezone=timezone,
             location=location,
             config=config,
-            session_logger=app_logger
+            session_logger=app_logger,
         )
 
         logger.info('Session has been created')
@@ -219,7 +228,6 @@ def get_session(workspace: str | Path, include_location: bool = True) -> Session
         logger.info('Reusing existing session')
         _current_session.log()
     return _current_session
-
 
 
 __all__ = ['Session', 'get_session']

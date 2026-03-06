@@ -17,6 +17,7 @@ _logger.addHandler(NullHandler())
 
 # ---- Models
 
+
 class AppCfg(BaseModel):
     """Application-level settings."""
 
@@ -84,6 +85,7 @@ def validate_settings(
     except ValidationError:
         _logger.exception('Valid schema: False')
         raise
+
 
 __all__ = [
     'AppCfg',
