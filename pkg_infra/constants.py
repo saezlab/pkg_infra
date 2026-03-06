@@ -2,4 +2,6 @@
 
 import datetime
 
-LOG_TIMESTAMP = datetime.datetime.now(datetime.UTC).strftime('%Y%m%d%H%M%S')
+LOG_TIMESTAMP = datetime.datetime.now(
+    datetime.timezone.utc,  # noqa: UP017
+).strftime('%Y%m%d%H%M%S')
