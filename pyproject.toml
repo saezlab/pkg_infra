@@ -149,6 +149,9 @@ report_level = "INFO"
 extend-include = ["*.ipynb"]
 line-length = 80
 target-version = "py312"
+exclude = [
+    "sandbox"
+]
 
 [tool.ruff.format]
 quote-style = "single"
