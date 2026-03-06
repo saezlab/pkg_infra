@@ -86,6 +86,9 @@ Homepage = "https://github.com/saezlab/pkg_infra"
 Issues = "https://github.com/saezlab/pkg_infra/issues"
 Repository = "https://github.com/saezlab/pkg_infra"
 
+[tool.hatch.build.targets.wheel]
+packages = ["src/pkg_infra"]
+
 # ===================================
 # =======        TOOL        ========
 # ===================================
@@ -109,8 +112,8 @@ source = ["pkg_infra"]
 [tool.cruft]
 skip = [
     "tests",
-    "pkg_infra/__init__.py",
-    "pkg_infra/_metadata.py",
+    "src/pkg_infra/__init__.py",
+    "src/pkg_infra/_metadata.py",
     "docs/api.md",
     "docs/changelog.md",
     "docs/references.bib",
