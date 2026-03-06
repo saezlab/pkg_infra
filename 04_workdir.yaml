@@ -1,12 +1,8 @@
 logging:
-  
   formatters:
     supersimple:
       format: "%(message)s"
-  loggers: 
-    default:
-      format: supersimple
-  
   handlers:
     file:
       filename: logs/myapp.log
+      formatter: default
