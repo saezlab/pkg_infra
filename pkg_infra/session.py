@@ -1,6 +1,7 @@
 # Standard library imports
 import json
 import uuid
+from pprint import pprint
 import socket
 import getpass
 import logging
@@ -83,14 +84,17 @@ class Session:
         logger.info(str(self))
 
     def print_config(self) -> None:
-        """Print the config attribute as yaml."""
+        """Print the session config as YAML when OmegaConf, otherwise pretty-print."""
         cfg = self.config
-        try:
-            if OmegaConf is not None and OmegaConf.is_config(cfg):
-                print(OmegaConf.to_yaml(cfg))
-                return
-        except ImportError:
-            logger.info('OmegaConf is not available. Falling back to pprint.')
+        if cfg is None:
+            logger.info('Session config is empty.')
+            return
+
+        if OmegaConf.is_config(cfg):
+            print(OmegaConf.to_yaml(cfg))
+            return
+
+        pprint(cfg)
 
     @staticmethod
     def get_logger() -> logging.Logger | None:
