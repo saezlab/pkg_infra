@@ -7,6 +7,7 @@ import getpass
 import logging
 from pathlib import Path
 from datetime import datetime, timezone
+import threading
 from dataclasses import dataclass
 from urllib.error import URLError
 from urllib.parse import urlparse
@@ -96,17 +97,20 @@ class Session:
 
         pprint(cfg)
 
-    def get_logger(self) -> logging.Logger | None:
-        """Return the logger instance from this session, if available.
+    @staticmethod
+    def get_logger() -> logging.Logger | None:
+        """Return the logger instance from the current session, if available.
 
         Returns:
             logging.Logger or None: The session logger instance, if set.
         """
-        return self.session_logger
+        global _current_session
+        return _current_session.session_logger if _current_session else None
 
 
 # ---- Global variables
 _current_session: Session | None = None
+_session_init_lock = threading.Lock()
 
 
 # ---- Private helper functions
@@ -182,7 +186,7 @@ def _get_app_logger(merged_config: object) -> logging.Logger:
 
 
 def get_session(
-    workspace: str | Path, include_location: bool = True
+    workspace: str | Path, include_location: bool = False
 ) -> Session:
     """Return a singleton Session object for this process, initializing it if necessary.
 
@@ -195,54 +199,49 @@ def get_session(
     """
     global _current_session
     logger.info('Initialization of a session:')
-    if _current_session is None:
-        config = _get_configuration()
-
-        configure_loggers_from_omegaconf(config, timestamp=LOG_TIMESTAMP)
-
-        app_logger = _get_app_logger(config)
-        app_logger.debug('Requesting session for workspace: %s', workspace)
-
-        hostname = _get_hostname()
-
-        username = _get_username()
-
-        resolved_workspace = _get_workspace(workspace)
-
-        process_id = _get_process_id()
-
-        now_utc, now_local = _get_time()
-
-        timezone = _get_timezone(now_local)
-
-        location = _get_location() if include_location else None
-
-        logger.info('Creating new session...')
-
-        _current_session = Session(
-            hostname=hostname,
-            username=username,
-            workspace=resolved_workspace,
-            id=process_id,
-            started_at_utc=now_utc,
-            started_at_local=now_local,
-            timezone=timezone,
-            location=location,
-            config=config,
-            session_logger=app_logger,
-        )
-
-        logger.info('Session has been created')
-    else:
+    if _current_session is not None:
         logger.info('Reusing existing session')
         _current_session.log()
+        return _current_session
+
+    with _session_init_lock:
+        if _current_session is None:
+            config = _get_configuration()
+
+            configure_loggers_from_omegaconf(config, timestamp=LOG_TIMESTAMP)
+
+            app_logger = _get_app_logger(config)
+            app_logger.debug('Requesting session for workspace: %s', workspace)
+
+            hostname = _get_hostname()
+            username = _get_username()
+            resolved_workspace = _get_workspace(workspace)
+            process_id = _get_process_id()
+            now_utc, now_local = _get_time()
+            timezone = _get_timezone(now_local)
+            location = _get_location() if include_location else None
+
+            logger.info('Creating new session...')
+
+            _current_session = Session(
+                hostname=hostname,
+                username=username,
+                workspace=resolved_workspace,
+                id=process_id,
+                started_at_utc=now_utc,
+                started_at_local=now_local,
+                timezone=timezone,
+                location=location,
+                config=config,
+                session_logger=app_logger,
+            )
+
+            logger.info('Session has been created')
+        else:
+            logger.info('Reusing existing session')
+            _current_session.log()
+
     return _current_session
 
 
-def get_current_logger() -> logging.Logger | None:
-    """Return the logger from the current singleton session, if initialized."""
-
-    return _current_session.session_logger if _current_session else None
-
-
-__all__ = ['Session', 'get_session', 'get_current_logger']
+__all__ = ['Session', 'get_session']
