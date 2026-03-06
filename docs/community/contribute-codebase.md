@@ -214,7 +214,7 @@ will then want to clone your fork to your machine.
 ```bash
 git clone https://github.com/your-user-name/pkg_infra.git
 cd pkg_infra
-git remote add upstream https://github.com/pkg_infra/pkg_infra.git
+git remote add upstream https://github.com/saezlab/pkg_infra.git
 git fetch upstream
 ```
 
