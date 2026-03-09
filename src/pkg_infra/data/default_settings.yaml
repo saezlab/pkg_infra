@@ -78,9 +78,6 @@ logging:
   loggers:
     default:
       level: INFO
-      #sysbio_infra: INFO
-      #sysbioverse: DEBUG
-      #metabolomics: false
       handlers: [console, file]
       propagate: false
     verbose:
@@ -91,13 +88,18 @@ logging:
       level: WARNING
       handlers: [file]
       propagate: false
+    
+    pkg_infra:
+      level: DEBUG
+      handlers: [console, file]
+      propagate: false
 
   filters:
     allow_all:
       (): logging.Filter
 
   root:
-    level: DEBUG
+    level: WARNING
     handlers: [console, file]
 
   scope:
