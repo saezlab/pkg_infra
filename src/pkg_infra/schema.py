@@ -73,12 +73,13 @@ def validate_settings(
     Returns True when valid. Raises ValidationError if invalid.
     """
     data = config
+    _logger.debug('Validating settings schema')
     if OmegaConf is not None and OmegaConf.is_config(config):
         data = OmegaConf.to_container(config, resolve=True)
 
     try:
         validated = Settings.model_validate(data)
-        _logger.info('Valid schema: True')
+        _logger.debug('Valid schema: True')
         if show:
             _logger.info(validated)
         return True

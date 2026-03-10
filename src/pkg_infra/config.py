@@ -49,6 +49,7 @@ class ConfigLoader:
         """
         logger.info('Starting configuration load')
         paths = resolve_config_paths()
+        logger.debug('Resolved config paths: %s', paths)
         parts = [
             load_existing(paths['ecosystem']),
             read_package_default(),
@@ -56,6 +57,14 @@ class ConfigLoader:
             load_existing(paths['cwd']),
             load_existing(paths['env']),
         ]
+        logger.info(
+            'Merging configuration sources: ecosystem=%s, package=%s, user=%s, cwd=%s, env=%s',
+            bool(paths['ecosystem'] and paths['ecosystem'].exists()),
+            True,
+            bool(paths['user'] and paths['user'].exists()),
+            bool(paths['cwd'] and paths['cwd'].exists()),
+            bool(paths['env'] and paths['env'].exists()),
+        )
 
         if config_path:
             custom_path = Path(config_path)
@@ -66,6 +75,8 @@ class ConfigLoader:
                 logger.warning(
                     'Custom config path does not exist: %s', custom_path
                 )
+        else:
+            logger.debug('No custom config path provided')
 
         config = merge_configs([p for p in parts if p is not None])
 
@@ -88,6 +99,11 @@ def resolve_config_paths() -> dict[str, Path | None]:
     ecosystem_dir = Path(platformdirs.site_config_dir('pkg_infra'))
     user_dir = Path(platformdirs.user_config_dir('pkg_infra'))
     env_value = os.environ.get(ENV_VARIABLE_DEFAULT_CONFIG)
+    if env_value is None:
+        logger.debug(
+            'Env var %s not set; skipping env config',
+            ENV_VARIABLE_DEFAULT_CONFIG,
+        )
 
     paths = {
         'ecosystem': ecosystem_dir / ECOSYSTEM_CONFIG_FILENAME,
@@ -97,7 +113,6 @@ def resolve_config_paths() -> dict[str, Path | None]:
         'env': Path(env_value) if env_value else None,
         'custom_path': None,
     }
-    logger.debug('Resolved config paths: %s', paths)
     return paths
 
 
@@ -138,6 +153,8 @@ def load_existing(path: Path | None) -> OmegaConf | None:
     if path and path.exists():
         logger.debug('Loading config file: %s', path)
         return OmegaConf.load(path)
+    if path:
+        logger.debug('Config file not found at %s; skipping', path)
     return None
 
 
@@ -150,4 +167,6 @@ def merge_configs(parts: list[OmegaConf]) -> OmegaConf:
     Returns:
         OmegaConf: The merged configuration object.
     """
+    if not parts:
+        logger.warning('No config parts found; using empty config')
     return OmegaConf.merge(*parts) if parts else OmegaConf.create({})

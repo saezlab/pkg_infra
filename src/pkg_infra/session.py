@@ -177,11 +177,13 @@ def _get_location(timeout: float = 3.0) -> str | None:
 
 def _get_configuration() -> object:
     """Load and return the merged configuration using ConfigLoader."""
+    logger.debug('Loading configuration via ConfigLoader')
     return ConfigLoader.load_config()
 
 
 def _get_app_logger(merged_config: object) -> logging.Logger:
     """Get the application logger from the merged configuration object."""
+    logger.debug('Using app logger: %s', merged_config.app.logger)
     return logging.getLogger(merged_config.app.logger)
 
 
@@ -198,6 +200,11 @@ def get_session(
         A Session object representing the current session.
     """
     global _current_session
+    logger.debug(
+        'get_session called with workspace=%s, include_location=%s',
+        workspace,
+        include_location,
+    )
     logger.info('Initialization of a session:')
     if _current_session is not None:
         logger.info('Reusing existing session')
@@ -219,7 +226,17 @@ def get_session(
             process_id = _get_process_id()
             now_utc, now_local = _get_time()
             timezone = _get_timezone(now_local)
-            location = _get_location() if include_location else None
+            logger.debug(
+                'Session time initialized: utc=%s, local=%s, timezone=%s',
+                now_utc,
+                now_local,
+                timezone,
+            )
+            if include_location:
+                location = _get_location()
+            else:
+                logger.debug('Location lookup skipped')
+                location = None
 
             logger.info('Creating new session...')
 
