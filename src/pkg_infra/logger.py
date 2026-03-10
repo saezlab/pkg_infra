@@ -43,10 +43,13 @@ def update_log_filenames_with_timestamp(
     """
     if timestamp is None:
         timestamp = datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    logger.debug('Updating log filenames with timestamp: %s', timestamp)
 
     def update_filename(filename: str) -> str:
         base, ext = os.path.splitext(filename)
-        return f'{base}_{timestamp}{ext}'
+        updated = f'{base}_{timestamp}{ext}'
+        logger.debug('Updated log filename: %s -> %s', filename, updated)
+        return updated
 
     def recursive_update(d: object) -> None:
         if isinstance(d, dict):
@@ -78,8 +81,10 @@ def configure_loggers_from_omegaconf(
         return
 
     if 'logging' not in merged_config:
+        logger.error("No 'logging' section found in config.")
         raise ValueError("No 'logging' section found in config.")
 
+    logger.info('Configuring logging from merged configuration')
     # Always convert to a pure dict (resolves all OmegaConf nodes)
     log_cfg = OmegaConf.to_container(
         merged_config['logging'], resolve=True, structured_config_mode='dict'
@@ -107,6 +112,7 @@ def configure_loggers_from_omegaconf(
             filename = handler.get('filename')
             if filename:
                 Path(filename).parent.mkdir(parents=True, exist_ok=True)
+                logger.debug('Ensured log directory exists: %s', Path(filename).parent)
 
     # Create the loggers listed in the config file
     dictConfig(log_cfg)
