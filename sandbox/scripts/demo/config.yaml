@@ -1,14 +1,25 @@
 logging:
-    level: INFO            # Log level
-    log_dir: ./log           # Directory for log files
-    app_name: demo_app       # Application name (used in log file name)
-    format: '[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s' # Log format
-    max_megabytes: 10         # Max log file size in megabytes (easier to understand)
-    backup_count: 3          # Number of rotated log files to keep
-    exclude_loggers:         # Loggers to suppress or set to WARNING
-    -   pandas
-    -   matplotlib
-    per_app_files: false     # Use per-app log files (future feature)
-    json_logs: false          # Enable JSON log output
-    timezone: Europe/Berlin          # Time zone for log timestamps (e.g., UTC, Europe/Berlin)
-    async_logging: true              # Enable async logging with QueueHandler/QueueListener
+    version: 1
+    disable_existing_loggers: False
+
+    formatters:
+        default:
+            format: "[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s"
+            datefmt: "%Y-%m-%d %H:%M:%S"
+
+    handlers:
+        file:
+            filename: logs/demo_app.log
+
+    loggers:
+        default:
+            level: INFO
+        requests:
+            level: DEBUG
+            propagate: False
+
+        # Underlying HTTP transport used by requests
+        urllib3:
+            level: info
+            propagate: False
+            handlers: [console, file]

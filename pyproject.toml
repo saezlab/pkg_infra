@@ -153,7 +153,11 @@ extend-include = ["*.ipynb"]
 line-length = 80
 target-version = "py312"
 exclude = [
-    "sandbox"
+    "sandbox",
+    "tests",
+    "tests/**",
+    "*/tests/**",
+    "**/test_*.py"
 ]
 
 [tool.ruff.format]
@@ -161,7 +165,11 @@ quote-style = "single"
 
 [tool.ruff.lint]
 exclude = [
-    "docs/_build"
+    "docs/_build",
+    "tests",
+    "tests/**",
+    "*/tests/**",
+    "**/test_*.py"
 ]
 ignore = [
     # flake8-bugbear (B)

@@ -69,11 +69,13 @@ logging:
       filters: [allow_all]
       stream: ext://sys.stdout
     file:
-      class: logging.FileHandler
+      class: logging.handlers.RotatingFileHandler
       level: DEBUG
       formatter: default
-      filename: "logs/file_logger.log"
+      filename: "logs/sysbioverse_logger.log"
       encoding: utf-8
+      maxBytes: 10485760  # 10 MB
+      backupCount: 5     # Keep up to 5 rotated log files
 
   loggers:
     default:
@@ -113,15 +115,39 @@ integrations: {}
 # -------------------------------------
 # ----      Ecosystem             -----
 # -------------------------------------
-ecosystems:
+packages_groups:
+  # Our ecosystem at saezlab
+  # Goals: 
+    # For instance: silence message from an entire group
+    # Define the output for the group
+    # Where to store the log files based on the group
+
   sysbioverse:
     - sysbioverse
     - sysbio_infra
+    - corneto
+    - omnipath
+    - decoupler
+
+  # Well know in the biology community
+  scverse:
+    - anndata
+    - scanpy  
+
+  # more technical
   sysbio_infra:
     - cache_manager
     - download_manager
 
-  metabolomics:
-    - annnet
-    - onionnet
-    - ontograph
+ # enable or disable messages
+  scientific:
+    - pandas
+    - seaboarn
+    - scipy
+    - numpy
+    - matplotlib
+    - plotly
+    - scikit-learn
+
+  
+  

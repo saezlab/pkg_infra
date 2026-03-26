@@ -18,7 +18,9 @@ def log_spammer(thread_id: int, n: int, delay: float = 0.0) -> None:
         delay (float, optional): Delay in seconds between messages. Defaults to 0.0.
     """
     session = get_session(workspace='scripts/demo', include_location=False)
-    log = session.get_logger()
+    log = session.session_logger
+    if log is None:
+        raise RuntimeError('Session logger is not initialized.')
     for i in range(n):
         log.info(f'Thread {thread_id} message {i + 1}')
         if delay:
