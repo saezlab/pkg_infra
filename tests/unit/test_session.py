@@ -63,12 +63,12 @@ def fixed_times() -> tuple[datetime, datetime]:
 
 
 @pytest.fixture
-def patch_session_runtime(monkeypatch: pytest.MonkeyPatch, fixed_times) -> None:
-    """Patch runtime helpers to deterministic values."""
+def patch_session_runtime(monkeypatch: pytest.MonkeyPatch, fixed_times, tmp_path: Path) -> None:
+    """Patch runtime helpers to deterministic values using tmp_path."""
     now_utc, now_local = fixed_times
     monkeypatch.setattr(session_module, '_get_hostname', lambda: 'host')
     monkeypatch.setattr(session_module, '_get_username', lambda: 'user')
-    monkeypatch.setattr(session_module, '_get_workspace', lambda _: Path('/tmp/ws'))
+    monkeypatch.setattr(session_module, '_get_workspace', lambda _: tmp_path)
     monkeypatch.setattr(session_module, '_get_process_id', lambda: 'pid-1')
     monkeypatch.setattr(session_module, '_get_time', lambda: (now_utc, now_local))
     monkeypatch.setattr(session_module, '_get_timezone', lambda _: 'UTC')
@@ -108,14 +108,14 @@ class TestSessionCreate:
     """Test cases for Session.create."""
 
     # ---- Nominal Case Tests
-    def test_nominal_case(self, fixed_times: tuple[datetime, datetime]) -> None:
+    def test_nominal_case(self, fixed_times: tuple[datetime, datetime], tmp_path: Path) -> None:
         """Test that Session.create populates fields as expected."""
         now_utc, now_local = fixed_times
 
         session = Session.create(
             hostname='host',
             username='user',
-            workspace=Path('/tmp/ws'),
+            workspace=tmp_path,
             process_id='pid-1',
             now_utc=now_utc,
             now_local=now_local,
@@ -127,20 +127,20 @@ class TestSessionCreate:
 
         assert session.hostname == 'host'
         assert session.username == 'user'
-        assert session.workspace == Path('/tmp/ws')
+        assert session.workspace == tmp_path
         assert session.id == 'pid-1'
         assert session.location_enabled is True
         assert session._location is None
 
     # ---- Edge Case Tests
     def test_location_disabled_does_not_fetch(
-        self, monkeypatch: pytest.MonkeyPatch
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ) -> None:
         """Test that location access does not fetch when disabled."""
         session = Session.create(
             hostname='host',
             username='user',
-            workspace=Path('/tmp/ws'),
+            workspace=tmp_path,
             process_id='pid-1',
             now_utc=datetime.now(timezone.utc),
             now_local=datetime.now(timezone.utc),
@@ -158,7 +158,7 @@ class TestSessionCreate:
 
     # ---- Regression Unit Tests
     def test_location_cached_after_first_access(
-        self, monkeypatch: pytest.MonkeyPatch
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ) -> None:
         """Test that location fetch is cached after first access."""
         calls = {'count': 0}
@@ -170,7 +170,7 @@ class TestSessionCreate:
         session = Session.create(
             hostname='host',
             username='user',
-            workspace=Path('/tmp/ws'),
+            workspace=tmp_path,
             process_id='pid-1',
             now_utc=datetime.now(timezone.utc),
             now_local=datetime.now(timezone.utc),
@@ -186,12 +186,12 @@ class TestSessionCreate:
         assert calls['count'] == 1
 
     # ---- Regression Unit Tests
-    def test_repr_includes_path(self) -> None:
+    def test_repr_includes_path(self, tmp_path: Path) -> None:
         """Test that __repr__ renders Path values with Path(...) formatting."""
         session = Session.create(
             hostname='host',
             username='user',
-            workspace=Path('/tmp/ws'),
+            workspace=tmp_path,
             process_id='pid-1',
             now_utc=datetime.now(timezone.utc),
             now_local=datetime.now(timezone.utc),
@@ -201,20 +201,20 @@ class TestSessionCreate:
             session_logger=None,
         )
 
-        assert "workspace=Path('/tmp/ws')" in repr(session)
+        assert f"workspace=Path('{tmp_path}')" in repr(session)
 
 
 class TestSessionConfigAccessors:
     """Test cases for Session config accessors."""
 
     # ---- Nominal Case Tests
-    def test_nominal_omegaconf_access(self) -> None:
+    def test_nominal_omegaconf_access(self, tmp_path: Path) -> None:
         """Test that OmegaConf config yields dict and YAML views."""
         cfg = OmegaConf.create({'app': {'name': 'demo'}})
         session = Session.create(
             hostname='host',
             username='user',
-            workspace=Path('/tmp/ws'),
+            workspace=tmp_path,
             process_id='pid-1',
             now_utc=datetime.now(timezone.utc),
             now_local=datetime.now(timezone.utc),
@@ -228,12 +228,12 @@ class TestSessionConfigAccessors:
         assert 'app:' in (session.get_config_yaml() or '')
 
     # ---- Negative Case Tests
-    def test_none_config_returns_none(self) -> None:
+    def test_none_config_returns_none(self, tmp_path: Path) -> None:
         """Test that missing config returns None for accessors."""
         session = Session.create(
             hostname='host',
             username='user',
-            workspace=Path('/tmp/ws'),
+            workspace=tmp_path,
             process_id='pid-1',
             now_utc=datetime.now(timezone.utc),
             now_local=datetime.now(timezone.utc),
@@ -247,13 +247,13 @@ class TestSessionConfigAccessors:
         assert session.get_config_yaml() is None
 
     # ---- Edge Case Tests
-    def test_mapping_config_returns_mapping(self) -> None:
+    def test_mapping_config_returns_mapping(self, tmp_path: Path) -> None:
         """Test that mapping config returns mapping and no YAML."""
         cfg = {'app': {'name': 'demo'}}
         session = Session.create(
             hostname='host',
             username='user',
-            workspace=Path('/tmp/ws'),
+            workspace=tmp_path,
             process_id='pid-1',
             now_utc=datetime.now(timezone.utc),
             now_local=datetime.now(timezone.utc),
@@ -267,12 +267,12 @@ class TestSessionConfigAccessors:
         assert session.get_config_yaml() is None
 
     # ---- Regression Unit Tests
-    def test_non_mapping_config_returns_none(self) -> None:
+    def test_non_mapping_config_returns_none(self, tmp_path: Path) -> None:
         """Test that non-mapping config returns None for dict view."""
         session = Session.create(
             hostname='host',
             username='user',
-            workspace=Path('/tmp/ws'),
+            workspace=tmp_path,
             process_id='pid-1',
             now_utc=datetime.now(timezone.utc),
             now_local=datetime.now(timezone.utc),
@@ -286,14 +286,14 @@ class TestSessionConfigAccessors:
 
     # ---- Nominal Case Tests
     def test_print_config_uses_yaml(
-        self, capsys: pytest.CaptureFixture[str]
+        self, capsys: pytest.CaptureFixture[str], tmp_path: Path
     ) -> None:
         """Test that print_config outputs YAML when available."""
         cfg = OmegaConf.create({'app': {'name': 'demo'}})
         session = Session.create(
             hostname='host',
             username='user',
-            workspace=Path('/tmp/ws'),
+            workspace=tmp_path,
             process_id='pid-1',
             now_utc=datetime.now(timezone.utc),
             now_local=datetime.now(timezone.utc),
@@ -309,13 +309,13 @@ class TestSessionConfigAccessors:
 
     # ---- Edge Case Tests
     def test_print_config_empty_config_logs(
-        self, caplog: pytest.LogCaptureFixture
+        self, caplog: pytest.LogCaptureFixture, tmp_path: Path
     ) -> None:
         """Test that print_config logs when config is empty."""
         session = Session.create(
             hostname='host',
             username='user',
-            workspace=Path('/tmp/ws'),
+            workspace=tmp_path,
             process_id='pid-1',
             now_utc=datetime.now(timezone.utc),
             now_local=datetime.now(timezone.utc),
@@ -339,14 +339,15 @@ class TestSessionManager:
         patch_session_runtime,
         patch_logging_setup,
         patch_config_and_logger,
+        tmp_path: Path,
     ) -> None:
         """Test that get_session returns the same instance on repeat calls."""
         manager = SessionManager()
-        s1 = manager.get_session('/tmp/ws')
-        s2 = manager.get_session('/tmp/ws')
+        s1 = manager.get_session(tmp_path)
+        s2 = manager.get_session(tmp_path)
 
         assert s1 is s2
-        assert s1.workspace == Path('/tmp/ws')
+        assert s1.workspace == tmp_path
 
     def test_config_path_merges(
         self,
@@ -365,7 +366,7 @@ class TestSessionManager:
             yaml.dump(config_data, f)
         manager = SessionManager()
         # Should not raise
-        session = manager.get_session('/tmp/ws', config_path=str(config_file))
+        session = manager.get_session(tmp_path, config_path=str(config_file))
         assert session.config is not None
 
     # ---- Edge Case Tests
@@ -374,10 +375,11 @@ class TestSessionManager:
         patch_session_runtime,
         patch_logging_setup,
         patch_config_and_logger,
+        tmp_path: Path,
     ) -> None:
         """Test that include_location enables lazy lookup."""
         manager = SessionManager()
-        session = manager.get_session('/tmp/ws', include_location=True)
+        session = manager.get_session(tmp_path, include_location=True)
 
         assert session.location_enabled is True
 
@@ -387,12 +389,13 @@ class TestSessionManager:
         monkeypatch: pytest.MonkeyPatch,
         patch_logging_setup,
         patch_config_and_logger,
+        tmp_path: Path,
     ) -> None:
         """Test that reset_session clears the singleton."""
         ids = iter(['pid-1', 'pid-2'])
         monkeypatch.setattr(session_module, '_get_hostname', lambda: 'host')
         monkeypatch.setattr(session_module, '_get_username', lambda: 'user')
-        monkeypatch.setattr(session_module, '_get_workspace', lambda _: Path('/tmp/ws'))
+        monkeypatch.setattr(session_module, '_get_workspace', lambda _: tmp_path)
         monkeypatch.setattr(session_module, '_get_process_id', lambda: next(ids))
         monkeypatch.setattr(
             session_module,
@@ -402,9 +405,9 @@ class TestSessionManager:
         monkeypatch.setattr(session_module, '_get_timezone', lambda _: 'UTC')
 
         manager = SessionManager()
-        s1 = manager.get_session('/tmp/ws')
+        s1 = manager.get_session(tmp_path)
         manager.reset_session()
-        s2 = manager.get_session('/tmp/ws')
+        s2 = manager.get_session(tmp_path)
 
         assert s1 is not s2
         assert s1.id != s2.id
@@ -419,9 +422,9 @@ class TestSessionManager:
     ) -> None:
         """Test that the manager reuse branch logs as expected."""
         manager = SessionManager()
-        manager.get_session('/tmp/ws')
+        manager.get_session(tmp_path)
         with caplog.at_level('INFO'):
-            manager.get_session('/tmp/ws')
+            manager.get_session(tmp_path)
         assert 'Reusing existing session' in caplog.text
 
 
