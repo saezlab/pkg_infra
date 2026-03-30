@@ -191,7 +191,9 @@ ignore = [
     "E303",  # Name: too-many-blank-lines
     "E501",  # Name: line too long
     "E731",  # Name: lambda-assignment
-    "E741"  # allow I, O, l as variable names -> I is the identity matrix
+    "E741",  # allow I, O, l as variable names -> I is the identity matrix
+    # Upgrade (UP)
+    "UP017"  # Name: datetime-timezone-utc
 ]
 select = [
     "B",  # flake8-bugbear

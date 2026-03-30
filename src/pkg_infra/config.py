@@ -11,12 +11,12 @@ from pkg_infra.schema import (
     validate_settings,
     _format_validation_errors,
 )
-from pkg_infra.constants import  (
-    ECOSYSTEM_CONFIG_FILENAME,
-    DEFAULT_PACKAGE_CONFIG_FILENAME,
+from pkg_infra.constants import (
     USER_CONFIG_FILENAME,
-    WORKING_DIRECTORY_CONFIG_FILENAME,
+    ECOSYSTEM_CONFIG_FILENAME,
     ENV_VARIABLE_DEFAULT_CONFIG,
+    DEFAULT_PACKAGE_CONFIG_FILENAME,
+    WORKING_DIRECTORY_CONFIG_FILENAME,
 )
 
 # Module logger

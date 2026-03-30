@@ -6,7 +6,6 @@ package, such as timestamp generation and other general utilities.
 
 import datetime
 
-
 def get_timestamp_now() -> str:
     """Get the current timestamp as a string in 'YYYYMMDDHHMMSS' format (UTC).
 

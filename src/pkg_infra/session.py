@@ -219,7 +219,6 @@ class Session:
         return location
 
 
-
 class SessionManager:
     """Manage the lifecycle of the singleton session.
 
@@ -231,9 +230,11 @@ class SessionManager:
         self._current_session: Session | None = None
         self._lock = threading.Lock()
 
-    
     def get_session(
-        self, workspace: str | Path, include_location: bool = False, config_path: str | Path | None = None
+        self,
+        workspace: str | Path,
+        include_location: bool = False,
+        config_path: str | Path | None = None,
     ) -> Session:
         """Return the process-wide Session, initializing if needed.
 
@@ -363,7 +364,7 @@ def _get_time() -> tuple[datetime, datetime]:
     Returns:
         tuple[datetime, datetime]: (utc_time, local_time)
     """
-    now_utc = datetime.now(timezone.utc)  # noqa: UP017
+    now_utc = datetime.now(timezone.utc)
     now_local = datetime.now().astimezone()
     return now_utc, now_local
 
@@ -457,11 +458,10 @@ def _get_app_logger(merged_config: ConfigLike) -> logging.Logger:
     return logging.getLogger(logger_name)
 
 
-
 def get_session(
     workspace: str | Path,
     include_location: bool = False,
-    config_path: str | Path | None = None
+    config_path: str | Path | None = None,
 ) -> Session:
     """Return the process-wide Session.
 
@@ -474,7 +474,9 @@ def get_session(
         Session: The current session instance.
     """
     return _default_manager.get_session(
-        workspace=workspace, include_location=include_location, config_path=config_path
+        workspace=workspace,
+        include_location=include_location,
+        config_path=config_path,
     )
 
 

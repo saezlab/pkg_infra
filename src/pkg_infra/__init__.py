@@ -17,10 +17,8 @@
 
 from pkg_infra._metadata import __author__, __version__
 
-
-def get_session(*args, **kwargs):
-    """
-    Lazily import and return pkg_infra.session.get_session to avoid circular import.
+def get_session(*args: object, **kwargs: object) -> object:
+    """Lazily import and return pkg_infra.session.get_session to avoid circular import.
 
     Args:
         workspace (str | Path):

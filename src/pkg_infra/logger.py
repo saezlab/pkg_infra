@@ -84,8 +84,6 @@ class LoggerConfigurator:
             logger.error('Failed to configure logging: %s', exc)
             raise
 
-
-
     def logger_setup(self, config: dict | OmegaConf, timestamp: str) -> None:
         """Configure logging from a configuration object.
 
@@ -170,21 +168,22 @@ def _patch_file_handlers_for_rotation(logging_config_dict: dict) -> None:
                 handler_cfg.setdefault('maxBytes', 10485760)
                 handler_cfg.setdefault('backupCount', 5)
 
+
 def _ensure_root_handlers(logging_config: dict) -> None:
     """Ensure root logger has both console and file handlers unless explicitly overridden."""
-    handlers = logging_config.get("handlers", {})
-    root = logging_config.get("root", {})
-    root_handlers = root.get("handlers")
+    handlers = logging_config.get('handlers', {})
+    root = logging_config.get('root', {})
+    root_handlers = root.get('handlers')
 
     # Only inject fallback if handlers is missing or empty
     if not root_handlers:
         fallback = []
-        if "console" in handlers:
-            fallback.append("console")
-        if "file" in handlers:
-            fallback.append("file")
-        root["handlers"] = fallback
-        logging_config["root"] = root
+        if 'console' in handlers:
+            fallback.append('console')
+        if 'file' in handlers:
+            fallback.append('file')
+        root['handlers'] = fallback
+        logging_config['root'] = root
 
 
 def _uppercase_levels(d: dict | list) -> None:
@@ -225,7 +224,7 @@ _logging_init_lock = threading.Lock()
 
 
 def initialize_logging(
-    config_path: str, loader=ConfigLoader.load_config
+    config_path: str, loader: callable = ConfigLoader.load_config
 ) -> None:
     """Initialize logging from a configuration file.
 

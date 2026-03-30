@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import logging
 from logging import NullHandler
-from collections.abc import Mapping
 from pathlib import Path
+from collections.abc import Mapping
 
 from pydantic import (
     Field,
@@ -22,10 +22,8 @@ logger = logging.getLogger(__name__)
 logger.addHandler(NullHandler())
 
 
-
-
-
 # ---- Models
+
 
 # -- 1. Section: App
 class AppConfigProfile(BaseModel):
@@ -41,6 +39,7 @@ class AppConfigProfile(BaseModel):
 # -- 2. Section: Environment
 class EnvironmentProfile(BaseModel):
     """Named environment profile."""
+
     model_config = ConfigDict(extra='forbid')
     name: str
     debug: bool
@@ -58,9 +57,10 @@ class SessionConfigProfile(BaseModel):
     started_at: str | None = None
     tags: list[str] = Field(default_factory=list)
 
+
 # -- 4. Section: Paths
 class PathsConfigProfile(BaseModel):
-    """Defaults Paths"""
+    """Defaults Paths."""
 
     model_config = ConfigDict(extra='forbid')
 
@@ -75,6 +75,7 @@ class FormatterProfile(BaseModel):
     format: str
     datefmt: str | None = None
 
+
 class HandlerProfile(BaseModel):
     class_: str = Field(..., alias='class')
     level: str
@@ -86,16 +87,21 @@ class HandlerProfile(BaseModel):
     maxBytes: int | None = None
     backupCount: int | None = None
 
+
 class LoggerProfile(BaseModel):
     level: str
     handlers: list[str]
     propagate: bool
 
+
 class RootLoggerProfile(BaseModel):
     level: str
     handlers: list[str]
 
+
 class LoggingConfigProfile(BaseModel):
+    """Full logging configuration schema."""
+
     version: int
     disable_existing_loggers: bool
     formatters: dict[str, FormatterProfile]
@@ -107,16 +113,17 @@ class LoggingConfigProfile(BaseModel):
 
     model_config = ConfigDict(extra='forbid', populate_by_name=True)
 
+
 # -- 6. Section: Integrations
 
 
 # -- 7. Section: Packages Groups
 
 
-
 # -- 8. Top-level Settings (defined last to avoid forward reference issues)
 class Settings(BaseModel):
     """Top-level merged settings schema."""
+
     model_config = ConfigDict(extra='forbid')
 
     settings_version: str
@@ -131,6 +138,7 @@ class Settings(BaseModel):
 
 # --- Validation Functions
 
+
 def _format_validation_errors(exc: ValidationError) -> list[str]:
     """Return compact human-readable messages for a Pydantic validation error."""
     formatted_errors = []
@@ -141,6 +149,7 @@ def _format_validation_errors(exc: ValidationError) -> list[str]:
         message = err.get('msg', 'Unknown validation error')
         formatted_errors.append(f'{location}: {message}')
     return formatted_errors
+
 
 def validate_settings(
     config: Mapping[str, object] | object,
