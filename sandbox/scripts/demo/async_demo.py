@@ -14,9 +14,9 @@ from __future__ import annotations
 import argparse
 import json
 from logging import getLogger
+import multiprocessing
 from pathlib import Path
 from time import perf_counter, sleep
-import subprocess
 import sys
 
 
@@ -95,8 +95,13 @@ def wait_for_last_record(log_file: Path, marker: str, timeout_seconds: float) ->
     return False
 
 
-def run_worker(mode: str, *, records: int, delay_seconds: float) -> None:
-    """Execute one benchmark mode and print a JSON summary."""
+def collect_worker_result(
+    mode: str,
+    *,
+    records: int,
+    delay_seconds: float,
+) -> dict[str, object]:
+    """Execute one benchmark mode and return a structured summary."""
     async_mode = mode == 'async'
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     log_file = LOG_DIR / f'benchmark_{mode}.log'
@@ -127,38 +132,66 @@ def run_worker(mode: str, *, records: int, delay_seconds: float) -> None:
     )
     total_elapsed = perf_counter() - start
 
-    print(json.dumps({
+    return {
         'mode': mode,
         'records': records,
         'delay_seconds': delay_seconds,
         'emit_elapsed': round(emit_elapsed, 6),
         'total_elapsed': round(total_elapsed, 6),
         'delivered': delivered,
-    }))
+    }
+
+
+def run_worker(mode: str, *, records: int, delay_seconds: float) -> None:
+    """Execute one benchmark mode and print a JSON summary."""
+    print(json.dumps(
+        collect_worker_result(
+            mode,
+            records=records,
+            delay_seconds=delay_seconds,
+        ),
+    ))
+
+
+def _benchmark_process_entry(
+    send_connection: multiprocessing.connection.Connection,
+    mode: str,
+    records: int,
+    delay_seconds: float,
+) -> None:
+    """Run one benchmark mode in an isolated process and send the result back."""
+    try:
+        payload = collect_worker_result(
+            mode,
+            records=records,
+            delay_seconds=delay_seconds,
+        )
+        send_connection.send(payload)
+    finally:
+        send_connection.close()
 
 
 def run_benchmark(*, records: int, delay_seconds: float) -> None:
-    """Run sync and async workers in isolated subprocesses and compare them."""
+    """Run sync and async workers in isolated processes and compare them."""
     results: dict[str, dict[str, object]] = {}
+    context = multiprocessing.get_context('spawn')
 
     for mode in ('sync', 'async'):
-        completed = subprocess.run(
-            [
-                sys.executable,
-                str(Path(__file__).resolve()),
-                '--mode',
-                mode,
-                '--records',
-                str(records),
-                '--delay-seconds',
-                str(delay_seconds),
-            ],
-            cwd=REPO_ROOT,
-            capture_output=True,
-            text=True,
-            check=True,
+        receive_connection, send_connection = context.Pipe(duplex=False)
+        process = context.Process(
+            target=_benchmark_process_entry,
+            args=(send_connection, mode, records, delay_seconds),
         )
-        payload = json.loads(completed.stdout.strip().splitlines()[-1])
+        process.start()
+        send_connection.close()
+        payload = receive_connection.recv()
+        receive_connection.close()
+        process.join()
+        if process.exitcode != 0:
+            raise RuntimeError(
+                f'Benchmark process for mode {mode!r} failed with exit code '
+                f'{process.exitcode}.',
+            )
         results[mode] = payload
 
     sync_elapsed = float(results['sync']['emit_elapsed'])
