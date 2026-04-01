@@ -1,0 +1,100 @@
+[data-md-color-scheme='default'] {
+  --pkg-brand-teal: #4c9c9b;
+  --pkg-brand-teal-soft: #dcefed;
+  --pkg-brand-slate: #3a4457;
+  --pkg-brand-ink: #0f1416;
+  --pkg-brand-sand: #f2f1ee;
+  --md-default-bg-color: #f2f1ee;
+  --md-default-fg-color: #1d2430;
+  --md-default-fg-color--light: #566070;
+  --md-default-fg-color--lighter: #7c8593;
+  --md-primary-fg-color: #3a4457;
+  --md-primary-fg-color--light: #535c6d;
+  --md-primary-fg-color--dark: #0f1416;
+  --md-accent-fg-color: #4c9c9b;
+  --md-accent-fg-color--transparent: rgba(76, 156, 155, 0.14);
+  --md-typeset-a-color: #2f7f80;
+  --md-code-bg-color: rgba(58, 68, 87, 0.06);
+}
+
+[data-md-color-scheme='slate'] {
+  --pkg-brand-teal: #67b8b3;
+  --pkg-brand-teal-soft: rgba(103, 184, 179, 0.18);
+  --pkg-brand-slate: #d8dde5;
+  --pkg-brand-ink: #0f1416;
+  --pkg-brand-sand: #f2f1ee;
+  --md-default-bg-color: #12181d;
+  --md-default-fg-color: rgba(242, 241, 238, 0.9);
+  --md-default-fg-color--light: rgba(242, 241, 238, 0.72);
+  --md-default-fg-color--lighter: rgba(242, 241, 238, 0.5);
+  --md-primary-fg-color: #0f1416;
+  --md-primary-fg-color--light: #1f2830;
+  --md-primary-fg-color--dark: #050708;
+  --md-accent-fg-color: #67b8b3;
+  --md-accent-fg-color--transparent: rgba(103, 184, 179, 0.16);
+  --md-typeset-a-color: #7fd2cc;
+  --md-code-bg-color: rgba(242, 241, 238, 0.08);
+}
+
+.md-header {
+  box-shadow: 0 0 0.75rem rgba(15, 20, 22, 0.16);
+}
+
+.md-tabs {
+  background: linear-gradient(90deg, rgba(58, 68, 87, 0.98), rgba(76, 156, 155, 0.96));
+}
+
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3 {
+  color: var(--pkg-brand-slate);
+  font-weight: 700;
+}
+
+.md-typeset .md-button {
+  border-radius: 999px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.md-typeset .md-button--primary {
+  background-color: var(--pkg-brand-teal);
+  border-color: var(--pkg-brand-teal);
+  color: #fff;
+}
+
+.md-typeset .md-button:hover {
+  box-shadow: 0 0.5rem 1.25rem rgba(58, 68, 87, 0.16);
+  transform: translateY(-1px);
+}
+
+.md-typeset .md-button--primary:hover {
+  background-color: #3f8a89;
+  border-color: #3f8a89;
+}
+
+.md-typeset .admonition,
+.md-typeset details {
+  border-radius: 0.85rem;
+}
+
+.md-typeset code {
+  border-radius: 0.35rem;
+}
+
+.pkg-hero {
+  margin: 0 0 2rem;
+  padding: 0.5rem 0 1rem;
+  text-align: center;
+}
+
+.pkg-hero img {
+  width: min(100%, 860px);
+  height: auto;
+  border-radius: 1.1rem;
+  box-shadow: 0 1.2rem 3rem rgba(15, 20, 22, 0.14);
+}
+
+.pkg-hero p {
+  margin: 1rem auto 0;
+  max-width: 48rem;
+}
