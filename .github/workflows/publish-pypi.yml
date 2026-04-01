@@ -12,9 +12,6 @@ permissions:
 jobs:
     build-and-publish:
         runs-on: ubuntu-latest
-        environment:
-            name: pypi
-            url: https://pypi.org/p/pkg_infra
         steps:
         -   uses: actions/checkout@v4
 

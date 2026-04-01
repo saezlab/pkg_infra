@@ -10,9 +10,6 @@ permissions:
 jobs:
     build-and-publish:
         runs-on: ubuntu-latest
-        environment:
-            name: testpypi
-            url: https://test.pypi.org/project/pkg_infra/
         steps:
         -   uses: actions/checkout@v4
 
