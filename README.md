@@ -1,4 +1,4 @@
-![project-banner](https://github.com/saezlab/pkg_infra/raw/main/docs/assets/project-banner-readme.png)
+![project-banner](https://raw.githubusercontent.com/saezlab/pkg_infra/main/docs/assets/project-banner-readme.png)
 
 ---
 
