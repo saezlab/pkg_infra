@@ -1,0 +1,254 @@
+# Default Schema and Baseline Configuration
+
+The package ships with a baseline configuration file at
+`src/pkg_infra/data/default_settings.yaml`. This file is the default structure
+that `pkg_infra` expects and merges with higher-precedence config sources.
+
+At a high level, the default schema contains these top-level sections:
+
+- `settings_version`
+- `app`
+- `environment`
+- `session`
+- `paths`
+- `logging`
+- `integrations`
+- `packages_groups`
+
+## What each section is for
+
+### `app`
+
+Application-level defaults, including the active environment key and the logger
+name used by the application.
+
+### `environment`
+
+Named environment profiles such as `dev`, `lab`, and `prod`.
+
+### `session`
+
+Values related to session metadata. These are mostly placeholders that are
+filled dynamically at runtime.
+
+### `paths`
+
+Optional filesystem locations such as data, cache, log, and temporary
+directories.
+
+### `logging`
+
+The base logging configuration used to derive the final Python
+`logging.config.dictConfig` payload.
+
+### `integrations`
+
+Package-specific configuration blocks. These allow downstream packages to store
+their own settings and optional logging overrides.
+
+### `packages_groups`
+
+Shared policies for groups of packages, especially for logging behavior across
+the ecosystem.
+
+## Baseline YAML
+
+```yaml
+# =============================================================================
+# Default configuration for pkg_infra.
+#
+# Baseline values for: application, environments, session, logging, and
+# integrations. User configs can override any section.
+# =============================================================================
+
+settings_version: 0.0.1 # configuration schema version
+
+# -------------------------------------
+# ----      Application           -----
+# -------------------------------------
+app:
+    name:
+    environment: dev # key under `environment`
+    logger: default # logger name under `logging.loggers`
+
+# -------------------------------------
+# ----      Environment           -----
+# -------------------------------------
+environment:
+    dev:
+        name: development
+        debug: true
+    lab:
+        name: laboratory
+        debug: true
+    prod:
+        name: production
+        debug: false
+
+# -------------------------------------
+# ----      Session               -----
+# -------------------------------------
+session:
+    id:
+    user:
+    workspace:
+    started_at:
+    tags: [] # optional labels for the session
+
+# -------------------------------------
+# ----      Paths                 -----
+# -------------------------------------
+paths:
+    data_dir:
+    cache_dir:
+    log_dir:
+    temp_dir:
+
+# -------------------------------------
+# ----      Logging               -----
+# -------------------------------------
+logging:
+    version: 1 # logging.config.dictConfig version
+    disable_existing_loggers: false
+    file_output_format: text # text or json for file handlers
+    async_mode: false # enable queue-based non-blocking logging
+    queue_maxsize: 10000 # maximum queued records when async mode is enabled
+    formatters:
+        default:
+            format: '[%(asctime)s] [%(levelname)-5s] [%(name)-25s] ▸ %(message)s'
+            datefmt: '%Y-%m-%d %H:%M:%S'
+        simple:
+            format: '%(asctime)s | %(levelname)s | %(name)s | %(message)s'
+
+    handlers:
+        console:
+            class: logging.StreamHandler
+            level: DEBUG
+            formatter: default
+            filters: [allow_all]
+            stream: ext://sys.stdout
+        file:
+            class: logging.handlers.RotatingFileHandler
+            level: DEBUG
+            formatter: default
+            filename: logs/sysbioverse_logger.log
+            encoding: utf-8
+            maxBytes: 10485760 # 10 MB
+            backupCount: 5 # Keep up to 5 rotated log files
+
+    loggers:
+        default:
+            level: INFO
+            handlers: [console, file]
+            propagate: false
+        verbose:
+            level: DEBUG
+            handlers: [console, file]
+            propagate: false
+        quiet:
+            level: WARNING
+            handlers: [file]
+            propagate: false
+
+        pkg_infra:
+            level: DEBUG
+            handlers: [console, file]
+            propagate: false
+
+    filters:
+        allow_all:
+            (): logging.Filter
+
+    root:
+        level: warning
+        handlers: [console, file]
+
+# -------------------------------------
+# ----      Integrations          -----
+# -------------------------------------
+integrations:
+    # Part of: sysbio_infra group
+    cache_manager:
+        settings:
+            cache_dir: /path/to/cache
+            default_expiry: 3600
+
+    # Part of: sysbio_infra group
+    download_manager:
+        settings:
+            download_dir: /path/to/downloads
+            max_retries: 3
+
+    # Part of: sysbioverse group
+    corneto:
+        logging:
+            level: INFO   # overrides group level only
+
+        settings:
+            network_path: src
+
+    # Part of: No group
+    ontograph:
+        logging:
+            enabled: true
+            level: INFO
+            handlers: [console, file]
+
+        settings:
+            api_url: https://api.ontograph.org
+            timeout: 30
+
+
+# -------------------------------------
+# ----      Ecosystem             -----
+# -------------------------------------
+packages_groups:
+
+    # Description: Set of bioinfomatics tools developed by Saezlab
+    sysbioverse:
+        logging:
+            enabled: true
+            level: DEBUG
+            handlers: [console, file]
+        packages:
+        -   sysbioverse
+        -   sysbio_infra
+        -   corneto
+        -   omnipath
+        -   decoupler
+
+    # Description: Well known packages in the Biology community
+    scverse:
+        logging:
+            enabled: true
+            level: DEBUG
+            handlers: [console, file]
+        packages:
+        -   anndata
+        -   scanpy
+
+    # Description: More technical packages supporting Non-Bioinformatics tasks
+    sysbio_infra:
+        logging:
+            enabled: true
+            level: DEBUG
+            handlers: [console, file]
+        packages:
+        -   cache_manager
+        -   download_manager
+
+    # Description: Well known in the data science community
+    scientific:
+        logging:
+            enabled: true
+            level: DEBUG
+            handlers: [console, file]
+        packages:
+        -   pandas
+        -   seaborn
+        -   scipy
+        -   numpy
+        -   matplotlib
+        -   plotly
+        -   scikit-learn
+```

@@ -32,3 +32,20 @@ Some other important things to know about the docs:
   instructions for the auto-generated documentation from the docstrings. For
   classes, there are a few subtleties around controlling which methods and
   attributes have pages auto-generated.
+
+## Build the documentation locally
+
+If you want to preview documentation changes locally, install the docs extras
+and serve the site from the project root:
+
+```bash
+pip install -e ".[docs]"
+source .venv/bin/activate
+mkdocs serve
+```
+
+If you want to run a strict build instead of the live server, use:
+
+```bash
+mkdocs build --strict
+```

@@ -1,7 +1,11 @@
 site_name: pkg_infra
 site_url: https://saezlab.github.io/pkg_infra
+hooks:
+-   docs/hooks.py
 theme:
     name: material
+    logo: assets/logo-pkg-infra.png
+    favicon: assets/logo-pkg-infra.png
     font:
         text: Lato
         code: Roboto Mono
@@ -13,14 +17,14 @@ theme:
     -   navigation.footer
     palette:
     -   scheme: default
-        primary: teal
-        accent: light blue
+        primary: custom
+        accent: custom
         toggle:
             icon: material/toggle-switch
             name: Switch to dark mode
     -   scheme: slate
-        primary: teal
-        accent: light blue
+        primary: custom
+        accent: custom
         toggle:
             icon: material/toggle-switch-off
             name: Switch to light mode
@@ -37,21 +41,27 @@ nav:
 
 -   Get Started:
     -   Installation: installation.md
-    -   Quickstart: learn/tutorials/quickstart.md
 
 -   Learn:
     -   Tutorials:
-        -   Basics: learn/tutorials/tutorial0001_basics.md
-        -   HowTo / FAQ:
-            -   learn/guides/index.md
+        -   Quickstart: learn/tutorials/quickstart.md
+    -   How-To Guides:
+        -   Overview: learn/guides/index.md
+        -   Writing and overriding configuration: learn/guides/config-overrides.md
 
--   Explanations:
-    -   learn/explanation/index.md
+    -   Explanations:
+        -   Core concepts: learn/tutorials/tutorial0001_basics.md
+        -   Overview: learn/explanation/index.md
+        -   Default schema and baseline configuration: learn/explanation/default-schema.md
 
 -   Reference:
     -   API Documentation:
-        -   pkg_infra:
-            -   _metadata: reference/source/pkg_infra/_metadata-docs.md
+        -   pkg_infra: reference/source/pkg_infra/pkg_infra-docs.md
+        -   config: reference/source/pkg_infra/config-docs.md
+        -   session: reference/source/pkg_infra/session-docs.md
+        -   logger: reference/source/pkg_infra/logger-docs.md
+        -   schema: reference/source/pkg_infra/schema-docs.md
+        -   metadata: reference/source/pkg_infra/_metadata-docs.md
 -   Community:
     -   Join Us: community/index.md
     -   Where to Start: community/contribute.md
@@ -91,6 +101,8 @@ plugins:
         default_handler: python
         handlers:
             python:
+                paths:
+                -   src
                 options:
                     annotations_path: brief
                     docstring_style: google
@@ -103,5 +115,5 @@ plugins:
                     show_signature_annotations: false
                     signature_crossrefs: true
 
-
-copyright: © Copyright 2021-2025, Saez-lab development team.
+extra_css:
+-   stylesheets/extra.css

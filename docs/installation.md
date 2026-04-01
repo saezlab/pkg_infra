@@ -1,37 +1,36 @@
-# Installation guide
+# Installation
 
-We strongly recommend installing a few prerequisites to ensure a smooth experience. These prerequisites are:
+## Requirements
 
-1. *Python 3* (version >= 3.10)
-      - [Install Python 3](https://docs.python.org/3/using/index.html)
-2. *Poetry* (Python packaging and dependency manager)
-      - [Install Poetry](https://python-poetry.org/docs/#installation)
-3. *git* (version control manager)
-      - [Install git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-4. *Docker* (containerization technology) [optional]
-      - [Install Docker](https://docs.docker.com/engine/)
+- Python 3.10 or newer
+- `pip` or another modern Python package installer
 
-!!! tip "Tip"
-    If you are missing any of those pre-requisites, **please follow the installation guide in each resource before you continue**.
+## Install from PyPI
 
+```bash
+pip install pkg_infra
+```
 
-## Checking prerequisites
+## Install from a local checkout
 
-You can verify access to these components in your terminal:
+Clone the repository and install it in editable mode:
 
-1. `Python` version 3.10 or higher.
-   ```bash
-   python --version
-   ```
-2. `Poetry`
-   ```bash
-   poetry --version
-   ```
-3. `git`
-   ```bash
-   git --version
-   ```
-4. `Docker`
-   ```bash
-   docker --version
-   ```
+```bash
+git clone https://github.com/saezlab/pkg_infra.git
+cd pkg_infra
+pip install -e .
+```
+
+## Install development extras
+
+If you are working on the package itself, install the relevant extras:
+
+```bash
+pip install -e ".[docs,tests,dev]"
+```
+
+## Verify the installation
+
+```bash
+python -c "import pkg_infra; print(pkg_infra.__version__)"
+```

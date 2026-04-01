@@ -1,9 +1,5 @@
 ![project-banner](./docs/assets/project-banner-readme.png)
 
-# pkg_infra
-
-- [ ] TODO: Add badges to your project.
-
 [![Tests](https://img.shields.io/github/actions/workflow/status/saezlab/pkg_infra/test.yml?branch=master)](https://github.com/saezlab/pkg_infra/actions/workflows/test.yml)
 [![Docs](https://img.shields.io/badge/docs-MkDocs-blue)](https://saezlab.github.io/pkg_infra/)
 ![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)
@@ -13,48 +9,95 @@
 ![Issues](https://img.shields.io/github/issues/saezlab/pkg_infra)
 ![Last Commit](https://img.shields.io/github/last-commit/saezlab/pkg_infra)
 
-## Description
+`pkg_infra` provides shared infrastructure for Saezlab Python packages. It
+standardizes three pieces of runtime behavior that are often reimplemented
+ad hoc across projects:
 
-This is session handler, configuration and logging handler for Saezlab packages and applications.
+- Session metadata for reproducible runs and workspace-aware execution
+- Layered YAML configuration with validation and predictable precedence
+- Centralized logging based on Python's standard `logging` module
+
+## What it includes
+
+- `pkg_infra.get_session(...)` as the main entrypoint for initializing runtime
+  state
+- Config loading from ecosystem, package default, user, working directory,
+  environment variable, and optional custom file sources
+- Pydantic-based validation for the merged settings model
+- Logging configuration generation with support for file handlers, JSON output,
+  package groups, and async queue-based logging
+- A packaged baseline configuration in
+  `src/pkg_infra/data/default_settings.yaml`
 
 ## Installation
 
-- [ ] TODO: Add installation instructions for your project, if applicable.
+Install the package from PyPI:
 
 ```bash
-# Example
-pip install <name-of-my-project>
+pip install pkg_infra
 ```
 
-## Usage
+Install it from a local checkout with docs or test extras when developing:
 
-- [ ] TODO: Add usage instructions for your project.
+```bash
+pip install -e ".[docs,tests]"
+```
+
+## Quick Example
 
 ```python
-import foobar
+from pathlib import Path
 
-# returns 'words'
-foobar.pluralize("word")
+from pkg_infra import get_session
 
-# returns 'geese'
-foobar.pluralize("goose")
+session = get_session(
+    workspace=Path("."),
+    include_location=False,
+)
 
-# returns 'phenomenon'
-foobar.singularize("phenomena")
+print(session)
+print(session.get_config_dict())
+
+corneto_settings = session.get_conf("corneto")
+print(corneto_settings)
 ```
+
+## Configuration Precedence
+
+`pkg_infra` merges configuration sources in this order, where later sources
+override earlier ones:
+
+1. Ecosystem config
+2. Packaged default config
+3. User config
+4. Working-directory config
+5. Config file pointed to by `PKG_INFRA_CONFIG`
+6. Explicit custom config path passed by the caller
+
+## Documentation
+
+The full documentation is published at
+<https://saezlab.github.io/pkg_infra/>.
+
+To serve the docs locally without the current upstream Material warning banner:
+
+```bash
+source .venv/bin/activate
+export NO_MKDOCS_2_WARNING=1
+PYTHONPATH=src mkdocs serve
+```
+
+Recommended starting points:
+
+- Installation: `docs/installation.md`
+- Quickstart: `docs/learn/tutorials/quickstart.md`
+- Project context and rationale: `docs/pkg_infra-project/`
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
-
-- [ ] TODO: add contribution guidelines. All of them can be modified in the mkdocs documentation (./docs/community)
+Contributions are welcome. The repository includes dedicated guides for
+documentation and code contributions in `docs/community/`.
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
-
-- [ ] TODO: Modify this based on the license you choose.
-- [ ] TODO: Modify the LICENSE file based on the license you choose.
+This project is distributed under the MIT License. See `LICENSE` for details.
