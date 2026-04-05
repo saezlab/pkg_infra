@@ -8,9 +8,9 @@
 #
 # File author(s): Edwin Carreño (ecarrenolozano@gmail.com)
 #
-# Distributed under the MIT license
+# Distributed under the BSD-3-Clause license
 # See the file `LICENSE` or read a copy at
-# https://opensource.org/license/mit
+# https://opensource.org/license/bsd-3-clause
 #
 
 """Package metadata (version, authors, etc)."""
@@ -23,7 +23,7 @@ import pathlib
 
 import toml
 
-_VERSION = '0.1.0'
+_VERSION = '0.1.1'
 
 
 def get_metadata() -> dict:
@@ -76,4 +76,4 @@ def get_metadata() -> dict:
 metadata = get_metadata()
 __version__ = metadata.get('version', None)
 __author__ = metadata.get('author', None)
-__license__ = 'MIT'
+__license__ = 'BSD-3-Clause'

@@ -22,7 +22,7 @@ classifiers = [
     "Development Status :: 2 - Pre-Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Topic :: Scientific/Engineering :: Bio-Informatics"
@@ -38,7 +38,7 @@ dependencies = [
     "toml"
 ]
 description = "This is session handler, configuration and logging handler for Saezlab packages and applications."
-license = "MIT"
+license = "BSD-3-Clause"
 maintainers = [
     {name = "Edwin Carreño", email = "ecarrenolozano@gmail.com"}
 ]
@@ -48,7 +48,7 @@ name = "pkg-infra"
 # ]
 readme = "README.md"
 requires-python = ">=3.10"
-version = "0.1.0"
+version = "0.1.1"
 
 [project.optional-dependencies]
 dev = [
@@ -108,14 +108,14 @@ omit = [
     "**/test_*.py"
 ]
 relative_files = true
-source = ["src"]
+source = ["pkg_infra"]
 
 # ---- Cruft: a tool to manage and update projects based on templates
 [tool.cruft]
 skip = [
     "tests",
-    "src/pkg_infra/__init__.py",
-    "src/pkg_infra/_metadata.py",
+    "pkg_infra/__init__.py",
+    "pkg_infra/_metadata.py",
     "docs/api.md",
     "docs/changelog.md",
     "docs/references.bib",
@@ -126,7 +126,7 @@ skip = [
 [tool.hatch]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/pkg_infra"]
+packages = ["pkg_infra"]
 
 # --- Pytest: a lightweight and scalable testing tool using the pytest framework
 [tool.pytest]

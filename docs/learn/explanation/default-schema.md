@@ -1,7 +1,7 @@
 # Default Schema and Baseline Configuration
 
 The package ships with a baseline configuration file at
-`src/pkg_infra/data/default_settings.yaml`. This file is the default structure
+`pkg_infra/data/default_settings.yaml`. This file is the default structure
 that `pkg_infra` expects and merges with higher-precedence config sources.
 
 At a high level, the default schema contains these top-level sections:

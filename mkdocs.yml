@@ -102,7 +102,7 @@ plugins:
         handlers:
             python:
                 paths:
-                -   src
+                -   .
                 options:
                     annotations_path: brief
                     docstring_style: google

@@ -32,7 +32,7 @@ ad hoc across projects:
 - Logging configuration generation with support for file handlers, JSON output,
   package groups, and async queue-based logging
 - A packaged baseline configuration in
-  `src/pkg_infra/data/default_settings.yaml`
+  `pkg_infra/data/default_settings.yaml`
 
 ## Installation
 
@@ -89,7 +89,7 @@ To serve the docs locally without the current upstream Material warning banner:
 ```bash
 source .venv/bin/activate
 export NO_MKDOCS_2_WARNING=1
-PYTHONPATH=src mkdocs serve
+mkdocs serve
 ```
 
 Recommended starting points:
@@ -105,4 +105,4 @@ documentation and code contributions in `docs/community/`.
 
 ## License
 
-This project is distributed under the MIT License. See `LICENSE` for details.
+This project is distributed under the BSD-3-Clause License. See `LICENSE` for details.
